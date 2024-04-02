@@ -23,8 +23,7 @@ public class GenerateHTML {
     public void openHTML(String tituloPagina) throws IOException {
         var pagina = this.response.getWriter();
         pagina.println("<html> <head> <title>Lista Produtos</title> " +
-                "<link rel='stylesheet' type='text/css' href='./styleTable.css' " +
-                "</head> <body>");
+                "<link rel='stylesheet' type='text/css' href='./style/styleTable.css' </head> <body>");
     }
 
     public void closeHTML() throws IOException {
@@ -63,8 +62,6 @@ public class GenerateHTML {
             pagina.println("<td>" + p.getEstoque() + "</td>");
             pagina.println("</tr>");
         }
-
-
 
         pagina.println("</tbody>");
         pagina.println("</table>");
