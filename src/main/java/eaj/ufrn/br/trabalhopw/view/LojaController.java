@@ -1,9 +1,12 @@
 package eaj.ufrn.br.trabalhopw.view;
 
 import eaj.ufrn.br.trabalhopw.dominio.Cliente;
+import eaj.ufrn.br.trabalhopw.dominio.Lojista;
 import eaj.ufrn.br.trabalhopw.persistencia.ClienteDAO;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,17 +18,28 @@ import java.net.http.HttpResponse;
 public class LojaController {
 
     @RequestMapping(value = "/logar", method = RequestMethod.POST)
-    public void doLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doLogin(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String email = request.getParameter("email");
         String senha = request.getParameter("senha");
 
         Cliente cliente = Cliente.clienteLogin(email,senha);
-        if(cliente != null){
-            System.out.println("Logado");
-            return;
+        Lojista lojista = Lojista.lojistaLogin(email, senha);
+
+        if(cliente != null || lojista != null){
+           HttpSession session = request.getSession();
+           session.setAttribute("logado", true);
+
+           if(cliente != null) {
+               session.setAttribute("tipo", "cliente");
+           }else{
+               session.setAttribute("tipo", "lojista");
+           }
+
+            response.sendRedirect("/LojaOnline");
+        }else{
+            System.out.println("Cliente não cadastrado");
         }
 
-        System.out.println("Cliente não cadastrado");
     }
 
     @RequestMapping(value = "/cadastrar", method = RequestMethod.POST)
