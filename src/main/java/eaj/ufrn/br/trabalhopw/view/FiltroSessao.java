@@ -9,7 +9,7 @@ import org.springframework.boot.web.servlet.server.Session;
 
 import java.io.IOException;
 
-@WebFilter("index.html")
+//@WebFilter("index.html")
 public class FiltroSessao implements Filter {
 
     @Override

@@ -1,6 +1,7 @@
 package eaj.ufrn.br.trabalhopw.view;
 
 import eaj.ufrn.br.trabalhopw.dominio.Produto;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -45,6 +46,7 @@ public class GenerateHTML {
 
     public void generateTable(ArrayList<Produto> lista, String [] cabecalhos, String caption) throws IOException {
         var pagina = this.response.getWriter();
+
         ArrayList<Produto> produtos = new ArrayList<Produto>();
 
         HttpSession sessao = request.getSession(false);
@@ -52,7 +54,7 @@ public class GenerateHTML {
         if(sessao != null) {
             String tipoSessao = (String) sessao.getAttribute("tipo");
 
-            pagina.println("<table>");
+            pagina.println("<table border=1>");
             pagina.println("<caption>" + caption + "</caption>");
 
             pagina.println("<thead>");
@@ -90,7 +92,7 @@ public class GenerateHTML {
             if(tipoSessao.equals("lojista"))
                 pagina.println("<a href='/paginaCadProd'>Cadastrar Produto</a>");
             else
-                pagina.println("<a href='/carrinho'>Ver Carrinho</a>");
+                pagina.println("<a href='/Carrinho'>Ver Carrinho</a>");
 
             pagina.println("<a href='/deslogar'>Sair</a>");
         }
