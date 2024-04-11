@@ -59,4 +59,30 @@ public class ProdutoDAO {
 
         return produtos;
     }
+
+    public static Produto buscarProduto(int id){
+        Produto produto = null;
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            connection = Conexao.getConnection();
+
+            stmt = connection.prepareStatement("select * from produto where id=?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                produto = new Produto(rs.getInt("id"), rs.getFloat("preco"), rs.getString("nome"),rs.getString("descricao"), rs.getInt(("estoque")));
+            }
+
+            connection.close();
+        } catch (SQLException | URISyntaxException ex) {
+            // response.getWriter().append("Connection Failed! Check output console");
+            System.out.println(ex.toString());
+        }
+
+        return produto;
+    }
 }

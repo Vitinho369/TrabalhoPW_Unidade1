@@ -1,16 +1,12 @@
 package eaj.ufrn.br.trabalhopw.view;
 
 import eaj.ufrn.br.trabalhopw.dominio.Produto;
-import eaj.ufrn.br.trabalhopw.persistencia.ProdutoDAO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Objects;
-
 public class GenerateHTML {
 
     HttpServletResponse response;
@@ -23,7 +19,7 @@ public class GenerateHTML {
 
     public void openHTML(String tituloPagina) throws IOException {
         var pagina = this.response.getWriter();
-        pagina.println("<html> <head> <title>Lista Produtos</title> </head> <body>");
+        pagina.println("<html> <head> <title>"+tituloPagina+"</title> </head> <body>");
     }
 
     public void closeHTML() throws IOException {
@@ -77,6 +73,13 @@ public class GenerateHTML {
                 pagina.println("<td>" + p.getDescricao() + "</td>");
                 pagina.println("<td>" + p.getPreco() + "</td>");
                 pagina.println("<td>" + p.getEstoque() + "</td>");
+                if(tipoSessao.equals("cliente")){
+                    if(p.getEstoque() > 0){
+                        pagina.println("<td><a href=\"/CarrinhoServlet?id="+p.getId()+"&comando=add\">Adicionar</a></td>");
+                    }else{
+                        pagina.println("<td>Sem Estoque</td>");
+                    }
+                }
                 pagina.println("</tr>");
             }
 
