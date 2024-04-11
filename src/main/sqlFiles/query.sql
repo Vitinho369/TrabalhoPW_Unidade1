@@ -14,7 +14,6 @@ CREATE TABLE Cliente(
 
 CREATE TABLE Produto(
     id SERIAL PRIMARY KEY,
-    id_lojista INTEGER REFERENCES Lojista(id),
     nome TEXT,
     preco FLOAT,
     estoque INTEGER,
@@ -33,7 +32,7 @@ INSERT INTO Lojista(nome, email, senha) VALUES
 ('Lorena Silva', 'lore_sil@yahoo.com.br','12uhuuu@');
 
 --Adicionando produtos default
-INSERT INTO Produto(id_lojista, nome, preco, estoque, descricao)  VALUES
-(1, 'Mesa',500,10,'Uma mesa de computador'),
-(1, 'Lápis', 2,50, 'Lápis B2 grafite'),
-(1, 'Computador', 1500,2, 'Computador I5 16Gb de RAM');
+INSERT INTO Produto(nome, preco, estoque, descricao)  VALUES
+('Mesa',500,10,'Uma mesa de computador'),
+('Lápis', 2,50, 'Lápis B2 grafite'),
+('Computador', 1500,2, 'Computador I5 16Gb de RAM');

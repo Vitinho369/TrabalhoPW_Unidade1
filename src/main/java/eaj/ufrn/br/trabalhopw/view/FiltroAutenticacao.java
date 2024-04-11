@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter("/index.html")
+@WebFilter("/LojaOnline")
 public class FiltroAutenticacao implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -21,16 +21,16 @@ public class FiltroAutenticacao implements Filter {
         HttpSession sessao = request.getSession(false);
 
         if(sessao == null){
-            response.sendRedirect("index.html");
+            response.sendRedirect("./index.html?msg=Usuario_nao_autorizado");
         }else{
 
             Boolean logado = (Boolean) sessao.getAttribute("logado");
 
+            System.out.println(logado);
             if(!logado || logado == null){
                 response.sendRedirect("index.html");
             }
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 

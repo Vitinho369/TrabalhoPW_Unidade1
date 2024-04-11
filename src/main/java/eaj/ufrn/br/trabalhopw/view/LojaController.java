@@ -10,9 +10,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 
 @Controller
 public class LojaController {
@@ -25,20 +27,18 @@ public class LojaController {
         Cliente cliente = Cliente.clienteLogin(email,senha);
         Lojista lojista = Lojista.lojistaLogin(email, senha);
 
-        if(cliente != null || lojista != null){
-           HttpSession session = request.getSession();
-           session.setAttribute("logado", true);
+        if(cliente != null || lojista != null) {
+            HttpSession session = request.getSession();
+            session.setAttribute("logado", true);
 
-           if(cliente != null) {
-               session.setAttribute("tipo", "cliente");
-           }else{
-               session.setAttribute("tipo", "lojista");
-           }
-
-            response.sendRedirect("/LojaOnline");
-        }else{
-            System.out.println("Cliente não cadastrado");
+            if (cliente != null) {
+                session.setAttribute("tipo", "cliente");
+            } else {
+                session.setAttribute("tipo", "lojista");
+            }
         }
+
+        response.sendRedirect("/LojaOnline");
 
     }
 
@@ -57,4 +57,15 @@ public class LojaController {
 
         clienteDAO.cadastrar(cliente);
     }
+
+
+    @RequestMapping(value = "/deslogar", method = RequestMethod.GET)
+    public void deslogar(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(false);
+
+        session.invalidate();
+
+        response.sendRedirect("index.html");
+    }
+
 }

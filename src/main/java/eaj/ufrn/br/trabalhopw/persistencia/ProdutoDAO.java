@@ -25,7 +25,7 @@ public class ProdutoDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                produtos.add(new Produto(rs.getInt("id"), rs.getInt("id_lojista"), rs.getFloat("preco"), rs.getString("nome"),rs.getString("descricao"), rs.getInt(("estoque"))));
+                produtos.add(new Produto(rs.getInt("id"), rs.getFloat("preco"), rs.getString("nome"),rs.getString("descricao"), rs.getInt(("estoque"))));
             }
 
             connection.close();
