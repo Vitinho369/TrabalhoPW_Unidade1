@@ -12,6 +12,29 @@ import java.util.ArrayList;
 
 public class ProdutoDAO {
 
+    public  static void Cadastrar_Produto(Produto p){
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        try {
+            connection = Conexao.getConnection();
+
+            stmt = connection.prepareStatement(
+                    "insert into produto (nome,preco, estoque,descricao) values (?,?,?,?)");
+
+            stmt.setString(1, p.getNome());
+            stmt.setFloat(2, p.getPreco());
+            stmt.setInt(3, p.getEstoque());
+            stmt.setString(4,p.getDescricao());
+
+            stmt.execute();
+            stmt.close();
+            connection.close();
+
+        } catch (SQLException | URISyntaxException ex) {
+            // response.getWriter().append("Connection Failed! Check output console");
+            System.out.println("Connection Failed! Check output console\n" + ex.toString());
+        }
+    }
     public static ArrayList<Produto> listarProdutos(){
         ArrayList<Produto> produtos = new ArrayList<Produto>();
         Connection connection = null;

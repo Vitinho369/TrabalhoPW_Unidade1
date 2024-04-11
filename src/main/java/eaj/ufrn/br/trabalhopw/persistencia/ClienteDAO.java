@@ -63,6 +63,24 @@ public class ClienteDAO {
     }
 
     public void deletar(Cliente c){
+        Cliente cBusca = null;
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        
+        try{
+            connection = Conexao.getConnection();
+            cBusca = Cliente.clienteLogin(c.getEmail(),c.getSenha());
+            if(cBusca != null){
+                stmt = connection.prepareStatement("DELETE FROM cliente where email= ? and senha = ?   ");
+                stmt.setString(1,c.getEmail());
+                stmt.setString(2, c.getSenha());
+                stmt.executeQuery();
+                stmt.close();
+            }
+
+        }catch(SQLException  | URISyntaxException ex){
+            System.out.println("Deu prego no sql");
+        }
 
     }
     public void atualizar(Cliente c){
