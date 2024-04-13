@@ -1,9 +1,12 @@
 package eaj.ufrn.br.trabalhopw.view;
 
+import eaj.ufrn.br.trabalhopw.dominio.Carrinho;
 import eaj.ufrn.br.trabalhopw.dominio.Produto;
 import eaj.ufrn.br.trabalhopw.persistencia.ProdutoDAO;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,28 +14,59 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static eaj.ufrn.br.trabalhopw.view.CarrinhoController.getProdutosCarrinho;
+
 @Controller
 public class ProdutosController {
+
+    private ArrayList<Produto> listaProdutos = ProdutoDAO.listarProdutos();
 
     @RequestMapping(value = "/LojaOnline")
     public void doListarProdutos(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        ArrayList<Produto> produtosListar = ProdutoDAO.listarProdutos();
+        GerarHTML gerarPagina = new GerarHTML(request, response);
+        HttpSession sessao = request.getSession(false);
 
-        GenerateHTML gerarPagina = new GenerateHTML(request, response);
+        if(sessao != null) {
+            Carrinho carrinho = (Carrinho) sessao.getAttribute("carrinho");
 
-        gerarPagina.openHTML("Listar Produtos");
-        String cabecalhos[] = {"Nome", "Descrição", "Preço", "Estoque"};
+            if(carrinho ==  null){
+                String parametro = sessao.getAttribute("usuario").toString();
+                System.out.println(parametro);
+                String usuario[] = parametro.split("@");
+                String email = usuario[0] + "_" + usuario[1];
+                Cookie[] cookieCarrinho = request.getCookies();
+                String arrayProdutos = "_";
 
-        gerarPagina.generateTable(produtosListar,cabecalhos, "Lista Produtos");
-        gerarPagina.closeHTML();
+                for (Cookie c : cookieCarrinho) {
+                    if (c.getName().equals(email)) {
+                        arrayProdutos = c.getValue();
+                        break;
+                    }
+                }
+
+                carrinho = new Carrinho(getProdutosCarrinho(arrayProdutos));
+
+                sessao.setAttribute("carrinho", carrinho);
+                System.out.println(arrayProdutos);
+                System.out.println(arrayProdutos);
+            }
+
+            gerarPagina.abrirHTML("Listar Produtos");
+            String cabecalhos[] = {"Nome", "Descrição", "Preço", "Estoque"};
+
+            gerarPagina.gerarTabelaProdutos(this.listaProdutos, cabecalhos, "Lista Produtos", carrinho);
+            gerarPagina.fecharHTML();
+        }else {
+            response.sendRedirect("index.html?msg=Usuario_nao_autorizado");
+        }
     }
 
     @RequestMapping(value = "/paginaCadProd", method = RequestMethod.GET)
     public void criarPaginaProd(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        GenerateHTML pagina = new GenerateHTML(request, response);
+        GerarHTML pagina = new GerarHTML(request, response);
 
-        pagina.openHTML("Cadastra Produto");
+        pagina.abrirHTML("Cadastra Produto");
 
         String labels[] = {"Nome", "Descrição", "Preço", "Estoque"};
         String ids[] = {"nome", "descricao", "preco", "estoque"};
@@ -40,8 +74,8 @@ public class ProdutosController {
         String action = "/cadastrarProduto";
         String buttonName = "Cadastrar Produto";
 
-        pagina.generateForm(labels, ids, buttonName, action);
-        pagina.closeHTML();
+        pagina.gerarForm(labels, ids, buttonName, action);
+        pagina.fecharHTML();
     }
 
     @RequestMapping(value = "/cadastrarProduto", method = RequestMethod.POST)

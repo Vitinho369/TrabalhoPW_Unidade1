@@ -24,10 +24,15 @@ public class LojaController {
 
         Cliente cliente = Cliente.clienteLogin(email,senha);
         Lojista lojista = Lojista.lojistaLogin(email, senha);
+        HttpSession session = request.getSession(false);
 
         if(cliente != null || lojista != null){
-           HttpSession session = request.getSession();
-           session.setAttribute("logado", true);
+
+            if(session != null){
+                session.invalidate();
+            }
+            session = request.getSession();
+            session.setAttribute("logado", true);
 
            if(cliente != null) {
                session.setAttribute("tipo", "cliente");
@@ -38,7 +43,13 @@ public class LojaController {
             session.setAttribute("usuario", email);
             response.sendRedirect("/LojaOnline");
         }else{
-            System.out.println("Cliente não cadastrado");
+            if(session != null){
+                session.invalidate();
+                System.out.println("Cliente não cadastrado");
+                response.sendRedirect("index.html?msg=Usuario_nao_autorizado");
+            }
+
+
         }
 
     }

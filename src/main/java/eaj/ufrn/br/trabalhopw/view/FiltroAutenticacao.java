@@ -26,10 +26,12 @@ public class FiltroAutenticacao implements Filter {
 
             Boolean logado = (Boolean) sessao.getAttribute("logado");
 
-            System.out.println(logado);
             if(!logado || logado == null){
+                sessao.invalidate();
                 response.sendRedirect("index.html");
+                return;
             }
+
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

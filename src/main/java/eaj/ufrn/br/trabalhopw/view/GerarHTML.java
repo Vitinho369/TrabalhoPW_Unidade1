@@ -1,34 +1,35 @@
 package eaj.ufrn.br.trabalhopw.view;
 
+import eaj.ufrn.br.trabalhopw.dominio.Carrinho;
 import eaj.ufrn.br.trabalhopw.dominio.Produto;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.ArrayList;
-public class GenerateHTML {
+public class GerarHTML {
 
-    HttpServletResponse response;
+    private HttpServletResponse response;
 
-    HttpServletRequest request;
-    public GenerateHTML(HttpServletRequest request, HttpServletResponse response){
+    private HttpServletRequest request;
+
+    public GerarHTML(HttpServletRequest request, HttpServletResponse response){
         this.request = request;
         this.response = response;
     }
 
-    public void openHTML(String tituloPagina) throws IOException {
+    public void abrirHTML(String tituloPagina) throws IOException {
         var pagina = this.response.getWriter();
         pagina.println("<html> <head> <title>"+tituloPagina+"</title> </head> <body>");
     }
 
-    public void closeHTML() throws IOException {
+    public void fecharHTML() throws IOException {
         var pagina = this.response.getWriter();
         pagina.println("</body> </html>");
     }
 
-    public void generateForm(String [] labels, String [] ids, String buttonName, String action) throws IOException {
+    public void gerarForm(String [] labels, String [] ids, String buttonName, String action) throws IOException {
         var pagina = this.response.getWriter();
 
         pagina.println("<form action = \""+action+"\" method=\"post\">");
@@ -44,9 +45,37 @@ public class GenerateHTML {
         pagina.println("</form>");
     }
 
-    public void generateTable(ArrayList<Produto> lista, String [] cabecalhos, String caption) throws IOException {
+    public void gerarTabelaCarrinho(Carrinho carrinho, String [] cabecalhos, String caption) throws IOException {
         var pagina = this.response.getWriter();
 
+        pagina.println("<table border=1>");
+        pagina.println("<caption>" + caption + "</caption>");
+
+        pagina.println("<thead>");
+        for (String cabecalho : cabecalhos) {
+            pagina.println("<th>" + cabecalho + "</th>");
+        }
+        pagina.println("</thead>");
+
+        pagina.println("<tbody>");
+        for (Produto produto : carrinho.getProdutos()) {
+            pagina.println("<tr>");
+            pagina.println("<td>" + produto.getNome() + "</td>");
+            pagina.println("<td>" + produto.getDescricao() + "</td>");
+            pagina.println("<td>" + produto.getPreco() + "</td>");
+            pagina.println("<td>" + produto.getEstoque() + "</td>");
+            pagina.println("<td><a href=\"/LojaOnline/CarrinhoServlet?id="+produto.getId()+"&comando=remove\">Remover</a></td>");
+            pagina.println("</tr>");
+        }
+        pagina.println("</tbody>");
+        pagina.println("</table>");
+
+        pagina.println("<a href=\"/LojaOnline\">Ver Produtos</a>");
+        pagina.println("<a href=\"/LojaOnline\">Finalizar Compra</a>");
+
+    }
+    public void gerarTabelaProdutos(ArrayList<Produto> lista, String [] cabecalhos, String caption, Carrinho carrinho) throws IOException {
+        var pagina = this.response.getWriter();
         ArrayList<Produto> produtos = new ArrayList<Produto>();
 
         HttpSession sessao = request.getSession(false);
@@ -70,14 +99,24 @@ public class GenerateHTML {
 
             pagina.println("<tbody>");
             for (Produto p : lista) {
+                int estoque = p.getEstoque();
                 pagina.println("<tr>");
                 pagina.println("<td>" + p.getNome() + "</td>");
                 pagina.println("<td>" + p.getDescricao() + "</td>");
                 pagina.println("<td>" + p.getPreco() + "</td>");
-                pagina.println("<td>" + p.getEstoque() + "</td>");
+
+                if(carrinho != null) {
+                    for (Produto pCarrinho : carrinho.getProdutos()) {
+                        if (pCarrinho.getId() == p.getId())
+                            estoque -= pCarrinho.getEstoque();
+                    }
+                }
+
+                pagina.println("<td>" + estoque + "</td>");
+
                 if(tipoSessao.equals("cliente")){
-                    if(p.getEstoque() > 0){
-                        pagina.println("<td><a href=\"/CarrinhoServlet?id="+p.getId()+"&comando=add\">Adicionar</a></td>");
+                    if(estoque > 0){
+                        pagina.println("<td><a href=\"/LojaOnline/CarrinhoServlet?id="+p.getId()+"&comando=add\">Adicionar</a></td>");
                     }else{
                         pagina.println("<td>Sem Estoque</td>");
                     }
