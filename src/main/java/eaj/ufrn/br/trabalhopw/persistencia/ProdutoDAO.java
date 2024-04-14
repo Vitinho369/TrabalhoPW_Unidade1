@@ -85,7 +85,7 @@ public class ProdutoDAO {
 
         return produto;
     }
-    public static Produto ReduzE(int estoque,int id){
+    public static Produto atualizarEstoque(int estoque,int id){
         Produto produto = null;
         Connection connection = null;
         PreparedStatement stmt = null;

@@ -1,15 +1,13 @@
 CREATE TABLE Lojista(
-    id SERIAL PRIMARY KEY,
+    email TEXT PRIMARY KEY,
     nome TEXT,
-    senha TEXT,
-    email TEXT
+    senha TEXT
 );
 
 CREATE TABLE Cliente(
-    id SERIAL PRIMARY KEY,
+    email TEXT PRIMARY KEY,
     nome TEXT,
-    senha TEXT,
-    email TEXT
+    senha TEXT
 );
 
 CREATE TABLE Produto(

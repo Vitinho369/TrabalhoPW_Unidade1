@@ -19,7 +19,7 @@ import static eaj.ufrn.br.trabalhopw.view.CarrinhoController.getProdutosCarrinho
 @Controller
 public class ProdutosController {
 
-    private ArrayList<Produto> listaProdutos = ProdutoDAO.listarProdutos();
+    private ArrayList<Produto> listaProdutos;
 
     @RequestMapping(value = "/LojaOnline")
     public void doListarProdutos(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -32,7 +32,6 @@ public class ProdutosController {
 
             if(carrinho ==  null){
                 String parametro = sessao.getAttribute("usuario").toString();
-                System.out.println(parametro);
                 String usuario[] = parametro.split("@");
                 String email = usuario[0] + "_" + usuario[1];
                 Cookie[] cookieCarrinho = request.getCookies();
@@ -48,17 +47,16 @@ public class ProdutosController {
                 carrinho = new Carrinho(getProdutosCarrinho(arrayProdutos));
 
                 sessao.setAttribute("carrinho", carrinho);
-                System.out.println(arrayProdutos);
-                System.out.println(arrayProdutos);
             }
 
             gerarPagina.abrirHTML("Listar Produtos");
             String cabecalhos[] = {"Nome", "Descrição", "Preço", "Estoque"};
 
+            this.listaProdutos = ProdutoDAO.listarProdutos();
             gerarPagina.gerarTabelaProdutos(this.listaProdutos, cabecalhos, "Lista Produtos", carrinho);
             gerarPagina.fecharHTML();
         }else {
-            response.sendRedirect("index.html?msg=Usuario_nao_autorizado");
+            response.sendRedirect("./index.html?msg=Usuario_nao_autorizado");
         }
     }
 

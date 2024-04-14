@@ -57,6 +57,9 @@ public class Produto {
     public void diminuiEstoque() {
         this.estoque--;
     }
+    public void diminuiEstoque(int qtdAtt) {
+        this.estoque-=qtdAtt;
+    }
     public void zerarEstoque(){
         this.estoque = 0;
     }

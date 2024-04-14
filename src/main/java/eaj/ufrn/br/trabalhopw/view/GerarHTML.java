@@ -48,6 +48,9 @@ public class GerarHTML {
     public void gerarTabelaCarrinho(Carrinho carrinho, String [] cabecalhos, String caption) throws IOException {
         var pagina = this.response.getWriter();
 
+        if(carrinho.getProdutos() == null || carrinho.getProdutos().isEmpty()){
+            response.sendRedirect("/LojaOnline");
+        }
         pagina.println("<table border=1>");
         pagina.println("<caption>" + caption + "</caption>");
 
@@ -71,7 +74,7 @@ public class GerarHTML {
         pagina.println("</table>");
 
         pagina.println("<a href=\"/LojaOnline\">Ver Produtos</a>");
-        pagina.println("<a href=\"/LojaOnline\">Finalizar Compra</a>");
+        pagina.println("<a href=\"/FinalizaCompra\">Finalizar Compra</a>");
 
     }
     public void gerarTabelaProdutos(ArrayList<Produto> lista, String [] cabecalhos, String caption, Carrinho carrinho) throws IOException {

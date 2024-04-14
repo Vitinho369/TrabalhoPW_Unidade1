@@ -46,10 +46,9 @@ public class LojaController {
             if(session != null){
                 session.invalidate();
                 System.out.println("Cliente não cadastrado");
-                response.sendRedirect("index.html?msg=Usuario_nao_autorizado");
             }
 
-
+            response.sendRedirect("./index.html?msg=Usuario_nao_autorizado");
         }
 
     }

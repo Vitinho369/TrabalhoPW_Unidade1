@@ -28,8 +28,7 @@ public class FiltroAutenticacao implements Filter {
 
             if(!logado || logado == null){
                 sessao.invalidate();
-                response.sendRedirect("index.html");
-                return;
+                response.sendRedirect("./index.html");
             }
 
         }
