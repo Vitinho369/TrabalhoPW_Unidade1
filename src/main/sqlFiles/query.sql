@@ -34,3 +34,5 @@ INSERT INTO Produto(nome, preco, estoque, descricao)  VALUES
 ('Mesa',500,10,'Uma mesa de computador'),
 ('Lápis', 2,50, 'Lápis B2 grafite'),
 ('Computador', 1500,2, 'Computador I5 16Gb de RAM');
+
+DROP TABLE Lojista

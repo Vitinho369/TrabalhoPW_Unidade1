@@ -19,13 +19,13 @@ public class ClienteDAO {
             connection = Conexao.getConnection();
 
             stmt = connection.prepareStatement(
-                    "insert into cliente (nome, email, senha) values (?,?,?)");
+                    "insert into cliente (email, nome, senha) values (?,?,?)");
 
-            stmt.setString(1, c.getNome());
-            stmt.setString(2, c.getEmail());
+            stmt.setString(1, c.getEmail());
+            stmt.setString(2, c.getNome());
             stmt.setString(3, c.getSenha());
 
-            stmt.executeUpdate();
+            stmt.execute();
             connection.close();
 
         } catch (SQLException | URISyntaxException ex) {

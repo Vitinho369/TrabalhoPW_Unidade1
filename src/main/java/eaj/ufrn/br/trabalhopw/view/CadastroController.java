@@ -16,7 +16,7 @@ public class CadastroController {
         GerarHTML pagina = new GerarHTML(request, response);
 
         pagina.abrirHTML("Cadastro");
-        String labels[] = {"Nome", "Email", "Senha"};
+        String labels[] = {"Email", "Nome", "Senha"};
         String ids[] = {"email", "nome", "senha"};
 
         String action = "/cadastrar";

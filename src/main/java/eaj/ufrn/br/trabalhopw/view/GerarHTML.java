@@ -39,11 +39,16 @@ public class GerarHTML {
 
         pagina.println("<form action = \""+action+"\" method=\"post\">");
         for(int i=0; i < labels.length; i++){
-            pagina.println("<label for=\""+labels[i]+"\">");
-            pagina.println(labels[i] + ": ");
-            pagina.println("<input type=\"text\" name=\""+ids[i]+"\" id=\""+ids[i]+"\">");
-            pagina.println("</label>");
+            if(ids[i].equals("senha")){
+                pagina.println(labels[i] + ": ");
+                pagina.println("<input type=\"password\" name=\""+ids[i]+"\" id=\""+ids[i]+"\" required>");
+            }else{
+                pagina.println("<label for=\"" + ids[i] + "\">" + labels[i] + ": </label>");
+
+                pagina.println("<input type=\"text\" name=\"" + ids[i] + "\" id=\"" + ids[i] + "\">");
+            }
             pagina.println("<br>");
+
         }
         pagina.println("<br>");
         pagina.println("<input type=\"submit\" value=\""+buttonName+"\">");

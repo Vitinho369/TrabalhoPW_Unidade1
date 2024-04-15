@@ -31,8 +31,19 @@ public class ProdutosController {
             Carrinho carrinho = (Carrinho) sessao.getAttribute("carrinho");
 
             if(carrinho ==  null){
+                Object teste = sessao.getAttribute("usuario");
+                if(teste == null){
+                    response.sendRedirect("index.html");
+                    return;
+                }
                 String parametro = sessao.getAttribute("usuario").toString();
+
                 String usuario[] = parametro.split("@");
+
+                if(2 > usuario.length){
+                    response.sendRedirect("index.html");
+                    return;
+                }
                 String email = usuario[0] + "_" + usuario[1];
                 Cookie[] cookieCarrinho = request.getCookies();
                 String arrayProdutos = "_";
