@@ -85,26 +85,22 @@ public class ProdutoDAO {
 
         return produto;
     }
-    public static Produto atualizarEstoque(int estoque,int id){
-        Produto produto = null;
+    public static void atualizarEstoque(int id,int estoque){
         Connection connection = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
 
         try {
             connection = Conexao.getConnection();
 
-            stmt = connection.prepareStatement("UPDATE produto SET estoque= ?  WHERE id = ?");
+            stmt = connection.prepareStatement("update produto set estoque = ? where id = ?");
             stmt.setInt(1, estoque);
             stmt.setInt(2,id);
-            stmt.executeQuery();
+            stmt.execute();
             connection.close();
         } catch (SQLException | URISyntaxException ex) {
             // response.getWriter().append("Connection Failed! Check output console");
             System.out.println(ex.toString());
         }
-
-        return produto;
     }
 
 }

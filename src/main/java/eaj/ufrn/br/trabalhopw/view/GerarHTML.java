@@ -29,6 +29,11 @@ public class GerarHTML {
         pagina.println("</body> </html>");
     }
 
+    public void gerarLink(String link, String textoLink) throws IOException{
+        var pagina = this.response.getWriter();
+        pagina.println("<a href="+link+">" + textoLink+ "</a>");
+    }
+
     public void gerarForm(String [] labels, String [] ids, String buttonName, String action) throws IOException {
         var pagina = this.response.getWriter();
 

@@ -73,7 +73,6 @@ public class CarrinhoController {
                 carrinho.setProdutos(getProdutosCarrinho(arrayProdutos));
 
                 Cookie arrayCokiee = new Cookie(email, arrayProdutos);
-                arrayCokiee.setPath("../");
                 arrayCokiee.setMaxAge(48 * 3600);
                 response.addCookie(arrayCokiee);
 
@@ -104,7 +103,6 @@ public class CarrinhoController {
 
                 sessao.setAttribute("carrinho", carrinho);
                 Cookie arrayCokiee = new Cookie(email, arrayProdutos);
-                arrayCokiee.setPath("../");
                 arrayCokiee.setMaxAge(48 * 3600);
                 response.addCookie(arrayCokiee);
 
@@ -121,9 +119,9 @@ public class CarrinhoController {
     @RequestMapping(value = "/Carrinho", method = RequestMethod.GET)
     public void verCarrinho(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession sessao = request.getSession(false);
-        Carrinho carrinho = (Carrinho) sessao.getAttribute("carrinho");
 
-        if(sessao != null && carrinho != null) {
+        if(sessao != null) {
+            Carrinho carrinho = (Carrinho) sessao.getAttribute("carrinho");
             ArrayList<Produto> Lista = carrinho.getProdutos();
 
             GerarHTML gerarHTML = new GerarHTML(request, response);
@@ -149,29 +147,22 @@ public class CarrinhoController {
             String parametro = sessao.getAttribute("usuario").toString();
             String usuario[] = parametro.split("@");
             String email = usuario[0] + "_" + usuario[1];
-            System.out.println(email);
-            Cookie[] cookieCarrinho = request.getCookies();
             String arrayProdutos = "";
 
-            for (Cookie c : cookieCarrinho) {
-                System.out.println(c.getName());
-                if (c.getName().equals(email)) {
-                    arrayProdutos = c.getValue();
-                    break;
-                }
-            }
+            Carrinho carrinho = (Carrinho) sessao.getAttribute("carrinho");
 
-            Carrinho carrinho = new Carrinho(getProdutosCarrinho(arrayProdutos));
-            System.out.println(arrayProdutos);
             for(Produto p: carrinho.getProdutos()){
                 Produto produtoAtt = ProdutoDAO.buscarProduto(p.getId());
-                System.out.println(p.getNome());
                 produtoAtt.diminuiEstoque(p.getEstoque());
                 ProdutoDAO.atualizarEstoque(produtoAtt.getId(), produtoAtt.getEstoque());
             }
 
+            sessao.removeAttribute("carrinho");
             Cookie arrayCokiee = new Cookie(email, arrayProdutos);
-            arrayCokiee.setMaxAge(-1);
+            arrayCokiee.setPath("/LojaOnline");
+            arrayCokiee.setMaxAge(0);
+            response.addCookie(arrayCokiee);
+
             response.sendRedirect("./LojaOnline");
         }else{
             response.sendRedirect("../index.html");

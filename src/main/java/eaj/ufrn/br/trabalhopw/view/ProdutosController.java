@@ -55,8 +55,6 @@ public class ProdutosController {
             this.listaProdutos = ProdutoDAO.listarProdutos();
             gerarPagina.gerarTabelaProdutos(this.listaProdutos, cabecalhos, "Lista Produtos", carrinho);
             gerarPagina.fecharHTML();
-        }else {
-            response.sendRedirect("./index.html?msg=Usuario_nao_autorizado");
         }
     }
 

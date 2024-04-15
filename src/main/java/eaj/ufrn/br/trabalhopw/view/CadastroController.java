@@ -9,21 +9,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.io.IOException;
 
 @Controller
-public class LoginController {
+public class CadastroController {
 
-    @RequestMapping(value = {"/", "index.html"}, method = RequestMethod.GET)
-    public void paginaInicial(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/cadastro", method = RequestMethod.GET)
+    public void paginaCadastro(HttpServletRequest request, HttpServletResponse response) throws IOException {
         GerarHTML pagina = new GerarHTML(request, response);
-        pagina.abrirHTML("Loja");
 
-        String labels[] = {"Email", "Senha"};
-        String ids[] = {"email", "senha"};
+        pagina.abrirHTML("Cadastro");
+        String labels[] = {"Nome", "Email", "Senha"};
+        String ids[] = {"email", "nome", "senha"};
 
-        String action = "/logar";
-        String buttonName = "Entrar";
+        String action = "/cadastrar";
+        String buttonName = "Cadastrar";
         pagina.gerarForm(labels, ids, buttonName, action);
-
-        pagina.gerarLink("/cadastro", "Crie uma conta");
         pagina.fecharHTML();
     }
 }
