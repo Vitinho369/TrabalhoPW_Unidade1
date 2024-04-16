@@ -82,6 +82,7 @@ public class ProdutosController {
         String buttonName = "Cadastrar Produto";
 
         pagina.gerarForm(labels, ids, buttonName, action);
+        pagina.gerarLink("/LojaOnline", "Voltar");
         pagina.fecharHTML();
     }
 
@@ -94,9 +95,11 @@ public class ProdutosController {
 
         Produto produto = new Produto(preco, nome, descricao, quantidade);
 
-        if(!nome.trim().equals("") && !descricao.trim().equals("") && preco != null && quantidade != null) {
+        if(!nome.trim().isEmpty() && !descricao.trim().isEmpty() && preco > 0 && quantidade > 0) {
             ProdutoDAO.Cadastrar_Produto(produto);
             response.sendRedirect("/LojaOnline");
+        }else{
+            response.sendRedirect("/paginaCadProd?msg=Nao_eh_possivel_cadastrar");
         }
     }
 }

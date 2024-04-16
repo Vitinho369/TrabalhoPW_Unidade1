@@ -2,6 +2,7 @@ package eaj.ufrn.br.trabalhopw.view;
 
 import eaj.ufrn.br.trabalhopw.dominio.Carrinho;
 import eaj.ufrn.br.trabalhopw.dominio.Produto;
+import eaj.ufrn.br.trabalhopw.persistencia.ProdutoDAO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +35,11 @@ public class GerarHTML {
         pagina.println("<a href="+link+">" + textoLink+ "</a>");
     }
 
+    public void escrever(String conteudo, String tag) throws IOException {
+        var pagina = this.response.getWriter();
+        pagina.println("<"+tag+">"+conteudo+"</"+tag+">");
+    }
+
     public void gerarForm(String [] labels, String [] ids, String buttonName, String action) throws IOException {
         var pagina = this.response.getWriter();
 
@@ -42,10 +48,16 @@ public class GerarHTML {
             if(ids[i].equals("senha")){
                 pagina.println(labels[i] + ": ");
                 pagina.println("<input type=\"password\" name=\""+ids[i]+"\" id=\""+ids[i]+"\" required>");
+            }else if(ids[i].equals("estoque")){
+                pagina.println(labels[i] + ": ");
+                pagina.println("<input type=\"number\" name=\""+ids[i]+"\" id=\""+ids[i]+"\" required>");
+            }else if(ids[i].equals("preco")){
+                pagina.println(labels[i] + ": ");
+                pagina.println("<input type=\"number\" name=\""+ids[i]+"\" id=\""+ids[i]+"\" step =\"0.01\" required>");
             }else{
                 pagina.println("<label for=\"" + ids[i] + "\">" + labels[i] + ": </label>");
 
-                pagina.println("<input type=\"text\" name=\"" + ids[i] + "\" id=\"" + ids[i] + "\">");
+                pagina.println("<input type=\"text\" name=\"" + ids[i] + "\" id=\"" + ids[i] + "\" required>");
             }
             pagina.println("<br>");
 
@@ -58,8 +70,9 @@ public class GerarHTML {
     public void gerarTabelaCarrinho(Carrinho carrinho, String [] cabecalhos, String caption) throws IOException {
         var pagina = this.response.getWriter();
 
-        if(carrinho.getProdutos() == null || carrinho.getProdutos().isEmpty()){
+        if(carrinho == null || carrinho.getProdutos() == null || carrinho.getProdutos().isEmpty()){
             response.sendRedirect("/LojaOnline");
+            return;
         }
         pagina.println("<table border=1>");
         pagina.println("<caption>" + caption + "</caption>");
@@ -71,20 +84,36 @@ public class GerarHTML {
         pagina.println("</thead>");
 
         pagina.println("<tbody>");
+        ArrayList<Produto> produtos = ProdutoDAO.listarProdutos();
+        boolean produtoDisponivel = true;
         for (Produto produto : carrinho.getProdutos()) {
+            produtoDisponivel = true;
             pagina.println("<tr>");
             pagina.println("<td>" + produto.getNome() + "</td>");
             pagina.println("<td>" + produto.getDescricao() + "</td>");
             pagina.println("<td>" + produto.getPreco() + "</td>");
+            for(Produto p: produtos){
+                if(produto.getId() == p.getId()){
+                    if(p.getEstoque() - produto.getEstoque() < 0){
+                        produtoDisponivel = false;
+                    }
+                }
+            }
             pagina.println("<td>" + produto.getEstoque() + "</td>");
             pagina.println("<td><a href=\"/LojaOnline/CarrinhoServlet?id="+produto.getId()+"&comando=remove\">Remover</a></td>");
+
+            if(!produtoDisponivel)
+                pagina.println("<td>Produto não disponível nessa quantidade</td>");
+
             pagina.println("</tr>");
         }
         pagina.println("</tbody>");
         pagina.println("</table>");
 
         pagina.println("<a href=\"/LojaOnline\">Ver Produtos</a>");
-        pagina.println("<a href=\"/FinalizaCompra\">Finalizar Compra</a>");
+
+        if(produtoDisponivel)
+            pagina.println("<a href=\"/FinalizaCompra\">Finalizar Compra</a>");
 
     }
     public void gerarTabelaProdutos(ArrayList<Produto> lista, String [] cabecalhos, String caption, Carrinho carrinho) throws IOException {
@@ -120,8 +149,10 @@ public class GerarHTML {
 
                 if(carrinho != null) {
                     for (Produto pCarrinho : carrinho.getProdutos()) {
-                        if (pCarrinho.getId() == p.getId())
-                            estoque -= pCarrinho.getEstoque();
+                        if (pCarrinho.getId() == p.getId()){
+                            if(estoque - pCarrinho.getEstoque() >= 0)
+                                estoque -= pCarrinho.getEstoque();
+                        }
                     }
                 }
 

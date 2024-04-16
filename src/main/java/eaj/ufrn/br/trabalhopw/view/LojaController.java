@@ -66,9 +66,18 @@ public class LojaController {
 
         ClienteDAO clienteDAO = new ClienteDAO();
 
-        clienteDAO.cadastrar(cliente);
+        boolean cadastrado = clienteDAO.cadastrar(cliente);
 
-        response.sendRedirect("index.html");
+        if(cadastrado) {
+            response.sendRedirect("index.html");
+        }else{
+            GerarHTML gerarHTML = new GerarHTML(request, response);
+            gerarHTML.abrirHTML("Falha");
+            gerarHTML.escrever("Não foi possível realizar o cadastro, já existe um usuário com este email no banco", "h2");
+            gerarHTML.gerarLink("/cadastro.html","Voltar");
+            gerarHTML.fecharHTML();
+        }
+
     }
 
     @RequestMapping(value = "/deslogar", method = RequestMethod.GET)

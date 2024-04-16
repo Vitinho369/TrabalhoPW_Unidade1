@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class ClienteDAO {
 
-    public static void cadastrar(Cliente c) {
+    public static boolean cadastrar(Cliente c) {
 
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -31,7 +31,10 @@ public class ClienteDAO {
         } catch (SQLException | URISyntaxException ex) {
             // response.getWriter().append("Connection Failed! Check output console");
             System.out.println("Connection Failed! Check output console\n" + ex.toString());
+            return false;
         }
+
+        return  true;
     }
 
     public static Cliente clienteLogado(String email, String senha){
@@ -66,7 +69,7 @@ public class ClienteDAO {
         Cliente cBusca = null;
         Connection connection = null;
         PreparedStatement stmt = null;
-        
+
         try{
             connection = Conexao.getConnection();
             cBusca = Cliente.clienteLogin(c.getEmail(),c.getSenha());

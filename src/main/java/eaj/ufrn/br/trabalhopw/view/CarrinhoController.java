@@ -21,7 +21,7 @@ public class CarrinhoController {
     public static ArrayList<Produto> getProdutosCarrinho(String arrayProdutos){
         ArrayList<Produto> produtos = new ArrayList<Produto>();
 
-        if(!arrayProdutos.equals("")) {
+        if(!arrayProdutos.isEmpty()) {
             for (String i : arrayProdutos.split("_")) {
                 boolean encontraProduto = false;
                 Produto prodCookie = ProdutoDAO.buscarProduto(Integer.parseInt(i));
@@ -49,67 +49,72 @@ public class CarrinhoController {
         HttpSession sessao = request.getSession(false);
 
         if(sessao != null) {
-            String command = request.getParameter("comando");
-            Carrinho carrinho = new Carrinho(new ArrayList<Produto>());
+            String tipo = (String) sessao.getAttribute("tipo");
 
-            String parametro = sessao.getAttribute("usuario").toString();
-            String usuario[] = parametro.split("@");
-            String email = usuario[0] + "_" + usuario[1];
+            if(tipo.equals("cliente")) {
+                String command = request.getParameter("comando");
+                Carrinho carrinho = new Carrinho(new ArrayList<Produto>());
 
-            Cookie[] cookieCarrinho = request.getCookies();
-            Integer id = Integer.parseInt(request.getParameter("id"));
-            String arrayProdutos = "";
+                String parametro = sessao.getAttribute("usuario").toString();
+                String usuario[] = parametro.split("@");
+                String email = usuario[0] + "_" + usuario[1];
 
-            for (Cookie c : cookieCarrinho) {
-                if (c.getName().equals(email)) {
-                    arrayProdutos = c.getValue();
-                    break;
+                Cookie[] cookieCarrinho = request.getCookies();
+                Integer id = Integer.parseInt(request.getParameter("id"));
+                String arrayProdutos = "";
+
+                for (Cookie c : cookieCarrinho) {
+                    if (c.getName().equals(email)) {
+                        arrayProdutos = c.getValue();
+                        break;
+                    }
                 }
+
+                if (command.equals("add")) {
+                    arrayProdutos += id + "_";
+
+                    carrinho.setProdutos(getProdutosCarrinho(arrayProdutos));
+
+                    Cookie arrayCokiee = new Cookie(email, arrayProdutos);
+                    arrayCokiee.setMaxAge(48 * 3600);
+                    response.addCookie(arrayCokiee);
+
+                    sessao.setAttribute("carrinho", carrinho);
+                    var encaminhar = request.getRequestDispatcher("/LojaOnline");
+                    encaminhar.forward(request, response);
+
+                } else if (command.equals("remove")) {
+                    carrinho.setProdutos(getProdutosCarrinho(arrayProdutos));
+
+                    carrinho.getProduto(id).diminuiEstoque();
+
+                    if (carrinho.getProduto(id).getEstoque() == 0) {
+                        carrinho.removeProduto(id);
+                    }
+
+                    String arrayRemove = arrayProdutos;
+                    arrayProdutos = "";
+                    int indiceRemove = arrayRemove.indexOf(String.valueOf(id));
+
+                    for (int i = 0; i < indiceRemove; i++) {
+                        arrayProdutos += String.valueOf(arrayRemove.charAt(i));
+                    }
+
+                    for (int i = indiceRemove + 2; i < arrayRemove.length(); i++) {
+                        arrayProdutos += String.valueOf(arrayRemove.charAt(i));
+                    }
+
+                    sessao.setAttribute("carrinho", carrinho);
+                    Cookie arrayCokiee = new Cookie(email, arrayProdutos);
+                    arrayCokiee.setMaxAge(48 * 3600);
+                    response.addCookie(arrayCokiee);
+
+                    var encaminhar = request.getRequestDispatcher("/Carrinho");
+                    encaminhar.forward(request, response);
+                }
+            }else{
+                response.sendRedirect("/LojaOnline");
             }
-
-            if (command.equals("add")) {
-                arrayProdutos += id + "_";
-
-                carrinho.setProdutos(getProdutosCarrinho(arrayProdutos));
-
-                Cookie arrayCokiee = new Cookie(email, arrayProdutos);
-                arrayCokiee.setMaxAge(48 * 3600);
-                response.addCookie(arrayCokiee);
-
-                sessao.setAttribute("carrinho", carrinho);
-                var encaminhar = request.getRequestDispatcher("/LojaOnline");
-                encaminhar.forward(request, response);
-
-            } else if (command.equals("remove")) {
-                carrinho.setProdutos(getProdutosCarrinho(arrayProdutos));
-
-                carrinho.getProduto(id).diminuiEstoque();
-
-                if(carrinho.getProduto(id).getEstoque() == 0){
-                    carrinho.removeProduto(id);
-                }
-
-                String arrayRemove = arrayProdutos;
-                arrayProdutos = "";
-                int indiceRemove = arrayRemove.indexOf(String.valueOf(id));
-
-                for(int i=0; i < indiceRemove;i++){
-                    arrayProdutos += String.valueOf(arrayRemove.charAt(i));
-                }
-
-                for(int i=indiceRemove+2; i < arrayRemove.length();i++){
-                    arrayProdutos += String.valueOf(arrayRemove.charAt(i));
-                }
-
-                sessao.setAttribute("carrinho", carrinho);
-                Cookie arrayCokiee = new Cookie(email, arrayProdutos);
-                arrayCokiee.setMaxAge(48 * 3600);
-                response.addCookie(arrayCokiee);
-
-                var encaminhar = request.getRequestDispatcher("/Carrinho");
-                encaminhar.forward(request, response);
-            }
-
         }else{
             var writer = response.getWriter();
             response.sendRedirect("../index.html");
@@ -122,17 +127,23 @@ public class CarrinhoController {
 
         if(sessao != null) {
             Carrinho carrinho = (Carrinho) sessao.getAttribute("carrinho");
-            ArrayList<Produto> Lista = carrinho.getProdutos();
 
-            GerarHTML gerarHTML = new GerarHTML(request, response);
+            if(carrinho != null){
+                ArrayList<Produto> Lista = carrinho.getProdutos();
 
-            gerarHTML.abrirHTML("Carrinho");
+                GerarHTML gerarHTML = new GerarHTML(request, response);
 
-            String cabecalhos[] = {"Nome", "Descrição", "Preço", "Estoque","Remover"};
-            String caption = "Lista Carrinho";
-            gerarHTML.gerarTabelaCarrinho(carrinho, cabecalhos, caption);
+                gerarHTML.abrirHTML("Carrinho");
 
-            gerarHTML.fecharHTML();
+                String cabecalhos[] = {"Nome", "Descrição", "Preço", "Estoque","Remover"};
+                String caption = "Lista Carrinho";
+                gerarHTML.gerarTabelaCarrinho(carrinho, cabecalhos, caption);
+
+                gerarHTML.fecharHTML();
+            }else{
+                response.sendRedirect("./index.html");
+                return;
+            }
         }else{
             response.sendRedirect("./index.html?msg=Usuario_nao_autorizado");
         }
@@ -154,7 +165,9 @@ public class CarrinhoController {
             for(Produto p: carrinho.getProdutos()){
                 Produto produtoAtt = ProdutoDAO.buscarProduto(p.getId());
                 produtoAtt.diminuiEstoque(p.getEstoque());
-                ProdutoDAO.atualizarEstoque(produtoAtt.getId(), produtoAtt.getEstoque());
+
+                if(produtoAtt.getEstoque() >= 0)
+                    ProdutoDAO.atualizarEstoque(produtoAtt.getId(), produtoAtt.getEstoque());
             }
 
             sessao.removeAttribute("carrinho");

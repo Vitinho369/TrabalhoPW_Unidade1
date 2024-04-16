@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
 
-@Controller
+//@Controller
 public class LoginController {
 
     @RequestMapping(value = {"/", "index.html"}, method = RequestMethod.GET)

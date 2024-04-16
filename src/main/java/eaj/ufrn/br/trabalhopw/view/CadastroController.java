@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
 
-@Controller
+//@Controller
 public class CadastroController {
 
     @RequestMapping(value = "/cadastro", method = RequestMethod.GET)
