@@ -102,7 +102,7 @@ public class CarrinhoController {
                         arrayProdutos += String.valueOf(arrayRemove.charAt(i));
                     }
 
-                    for (int i = indiceRemove + 2; i < arrayRemove.length(); i++) {
+                    for (int i = indiceRemove + (String.valueOf(id).length()+1); i < arrayRemove.length(); i++) {
                         arrayProdutos += String.valueOf(arrayRemove.charAt(i));
                     }
 
