@@ -24,20 +24,22 @@ public class CarrinhoController {
         if(!arrayProdutos.isEmpty()) {
             for (String i : arrayProdutos.split("_")) {
                 boolean encontraProduto = false;
-                Produto prodCookie = ProdutoDAO.buscarProduto(Integer.parseInt(i));
-                if (prodCookie != null) {
-                    prodCookie.zerarEstoque();
-                    prodCookie.incrementaEstoque();
+                if (!i.isEmpty()) {
+                    Produto prodCookie = ProdutoDAO.buscarProduto(Integer.parseInt(i));
+                    if (prodCookie != null) {
+                        prodCookie.zerarEstoque();
+                        prodCookie.incrementaEstoque();
 
-                    for (Produto p : produtos) {
-                        if (p.getId() == prodCookie.getId()) {
-                            encontraProduto = true;
-                            p.incrementaEstoque();
+                        for (Produto p : produtos) {
+                            if (p.getId() == prodCookie.getId()) {
+                                encontraProduto = true;
+                                p.incrementaEstoque();
+                            }
                         }
-                    }
 
-                    if (!encontraProduto)
-                        produtos.add(prodCookie);
+                        if (!encontraProduto)
+                            produtos.add(prodCookie);
+                    }
                 }
             }
         }
@@ -129,8 +131,6 @@ public class CarrinhoController {
             Carrinho carrinho = (Carrinho) sessao.getAttribute("carrinho");
 
             if(carrinho != null){
-                ArrayList<Produto> Lista = carrinho.getProdutos();
-
                 GerarHTML gerarHTML = new GerarHTML(request, response);
 
                 gerarHTML.abrirHTML("Carrinho");
@@ -142,7 +142,6 @@ public class CarrinhoController {
                 gerarHTML.fecharHTML();
             }else{
                 response.sendRedirect("./index.html");
-                return;
             }
         }else{
             response.sendRedirect("./index.html?msg=Usuario_nao_autorizado");

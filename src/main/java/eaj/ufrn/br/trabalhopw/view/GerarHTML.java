@@ -85,9 +85,9 @@ public class GerarHTML {
 
         pagina.println("<tbody>");
         ArrayList<Produto> produtos = ProdutoDAO.listarProdutos();
-        boolean produtoDisponivel = true;
+        boolean finalizarCompra = true;
         for (Produto produto : carrinho.getProdutos()) {
-            produtoDisponivel = true;
+            boolean produtoDisponivel = true;
             pagina.println("<tr>");
             pagina.println("<td>" + produto.getNome() + "</td>");
             pagina.println("<td>" + produto.getDescricao() + "</td>");
@@ -96,6 +96,7 @@ public class GerarHTML {
                 if(produto.getId() == p.getId()){
                     if(p.getEstoque() - produto.getEstoque() < 0){
                         produtoDisponivel = false;
+                        finalizarCompra = false;
                     }
                 }
             }
@@ -112,7 +113,7 @@ public class GerarHTML {
 
         pagina.println("<a href=\"/LojaOnline\">Ver Produtos</a>");
 
-        if(produtoDisponivel)
+        if(finalizarCompra)
             pagina.println("<a href=\"/FinalizaCompra\">Finalizar Compra</a>");
 
     }

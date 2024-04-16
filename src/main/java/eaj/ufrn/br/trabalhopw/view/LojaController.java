@@ -63,21 +63,24 @@ public class LojaController {
         System.out.println(cliente.getSenha());
         System.out.println(cliente.getEmail());
         System.out.println(cliente.getNome());
+        if(!cliente.getNome().trim().isEmpty() && !cliente.getSenha().trim().isEmpty()) {
 
-        ClienteDAO clienteDAO = new ClienteDAO();
+            ClienteDAO clienteDAO = new ClienteDAO();
 
-        boolean cadastrado = clienteDAO.cadastrar(cliente);
+            boolean cadastrado = clienteDAO.cadastrar(cliente);
 
-        if(cadastrado) {
-            response.sendRedirect("index.html");
+            if (cadastrado) {
+                response.sendRedirect("index.html");
+            } else {
+                GerarHTML gerarHTML = new GerarHTML(request, response);
+                gerarHTML.abrirHTML("Falha");
+                gerarHTML.escrever("Não foi possível realizar o cadastro, já existe um usuário com este email no banco", "h2");
+                gerarHTML.gerarLink("/cadastro.html", "Voltar");
+                gerarHTML.fecharHTML();
+            }
         }else{
-            GerarHTML gerarHTML = new GerarHTML(request, response);
-            gerarHTML.abrirHTML("Falha");
-            gerarHTML.escrever("Não foi possível realizar o cadastro, já existe um usuário com este email no banco", "h2");
-            gerarHTML.gerarLink("/cadastro.html","Voltar");
-            gerarHTML.fecharHTML();
+            response.sendRedirect("./cadastro.html");
         }
-
     }
 
     @RequestMapping(value = "/deslogar", method = RequestMethod.GET)
