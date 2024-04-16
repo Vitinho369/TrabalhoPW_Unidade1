@@ -73,17 +73,26 @@ public class ProdutosController {
     public void criarPaginaProd(HttpServletRequest request, HttpServletResponse response) throws IOException{
         GerarHTML pagina = new GerarHTML(request, response);
 
-        pagina.abrirHTML("Cadastra Produto");
+        HttpSession sessao = request.getSession();
 
-        String labels[] = {"Nome", "Descrição", "Preço", "Estoque"};
-        String ids[] = {"nome", "descricao", "preco", "estoque"};
+        if(sessao != null) {
+            String tipoUsuario = (String) sessao.getAttribute("tipo");
+            if(tipoUsuario != null && tipoUsuario.equals("lojista")) {
+                pagina.abrirHTML("Cadastra Produto");
 
-        String action = "/cadastrarProduto";
-        String buttonName = "Cadastrar Produto";
+                String labels[] = {"Nome", "Descrição", "Preço", "Estoque"};
+                String ids[] = {"nome", "descricao", "preco", "estoque"};
 
-        pagina.gerarForm(labels, ids, buttonName, action);
-        pagina.gerarLink("/LojaOnline", "Voltar");
-        pagina.fecharHTML();
+                String action = "/cadastrarProduto";
+                String buttonName = "Cadastrar Produto";
+
+                pagina.gerarForm(labels, ids, buttonName, action);
+                pagina.gerarLink("/LojaOnline", "Voltar");
+                pagina.fecharHTML();
+            }else{
+                response.sendRedirect("./index.html");
+            }
+        }
     }
 
     @RequestMapping(value = "/cadastrarProduto", method = RequestMethod.POST)
