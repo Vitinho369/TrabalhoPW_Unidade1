@@ -29,9 +29,10 @@ public class Carrinho {
         produtos.add(p);
     }
 
-    public float TotalCompra(ArrayList<Produto> lista){
+    public float TotalCompra(){
         float resultado = 0;
-        for (Produto produto : lista){
+
+        for (Produto produto : this.produtos){
             resultado += produto.getPreco();
         }
         return resultado;

@@ -124,6 +124,7 @@ public class CarrinhoController {
 
         String cabecalhos[] = {"Nome", "Descrição", "Preço", "Estoque","Remover"};
         String caption = "Lista Carrinho";
+
         gerarHTML.gerarTabelaCarrinho(carrinho, cabecalhos, caption);
 
         gerarHTML.fecharHTML();
