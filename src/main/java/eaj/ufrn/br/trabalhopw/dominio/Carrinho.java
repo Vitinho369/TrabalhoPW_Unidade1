@@ -28,4 +28,12 @@ public class Carrinho {
     public void addProduto (Produto p){
         produtos.add(p);
     }
+
+    public float TotalCompra(ArrayList<Produto> lista){
+        float resultado = 0;
+        for (Produto produto : lista){
+            resultado += produto.getPreco();
+        }
+        return resultado;
+    }
 }
