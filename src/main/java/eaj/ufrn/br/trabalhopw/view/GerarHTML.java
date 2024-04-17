@@ -108,10 +108,10 @@ public class GerarHTML {
 
             pagina.println("</tr>");
         }
-        pagina.println("<p>O total de sua compra é"+carrinho.TotalCompra()+"</p>");
+
         pagina.println("</tbody>");
         pagina.println("</table>");
-
+        pagina.println("<p>O total de sua compra é: "+carrinho.TotalCompra()+"</p>");
         pagina.println("<a href=\"/LojaOnline\">Ver Produtos</a>");
 
         if(finalizarCompra)
