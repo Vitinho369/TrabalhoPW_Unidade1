@@ -117,6 +117,7 @@ public class CarrinhoController {
     public void verCarrinho(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession sessao = request.getSession(false);
         Carrinho carrinho = (Carrinho) sessao.getAttribute("carrinho");
+        float total = carrinho.TotalCompra();
 
         GerarHTML gerarHTML = new GerarHTML(request, response);
 
@@ -125,7 +126,7 @@ public class CarrinhoController {
         String cabecalhos[] = {"Nome", "Descrição", "Preço", "Estoque","Remover"};
         String caption = "Lista Carrinho";
 
-        gerarHTML.gerarTabelaCarrinho(carrinho, cabecalhos, caption);
+        gerarHTML.gerarTabelaCarrinho(carrinho, cabecalhos, caption , total);
 
         gerarHTML.fecharHTML();
     }

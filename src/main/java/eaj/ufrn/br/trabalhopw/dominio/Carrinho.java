@@ -33,7 +33,7 @@ public class Carrinho {
         float resultado = 0;
 
         for (Produto produto : this.produtos){
-            resultado += produto.getPreco();
+            resultado += produto.getPreco() * produto.getEstoque();
         }
         return resultado;
     }

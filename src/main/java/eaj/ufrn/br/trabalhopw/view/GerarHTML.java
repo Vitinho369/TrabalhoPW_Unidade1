@@ -67,9 +67,9 @@ public class GerarHTML {
         pagina.println("</form>");
     }
 
-    public void gerarTabelaCarrinho(Carrinho carrinho, String [] cabecalhos, String caption) throws IOException {
+    public void gerarTabelaCarrinho(Carrinho carrinho, String [] cabecalhos, String caption , float total) throws IOException {
         var pagina = this.response.getWriter();
-
+        var contador = 0;
         if(carrinho == null || carrinho.getProdutos() == null || carrinho.getProdutos().isEmpty()){
             response.sendRedirect("/LojaOnline");
             return;
@@ -107,11 +107,17 @@ public class GerarHTML {
                 pagina.println("<td>Produto não disponível nessa quantidade</td>");
 
             pagina.println("</tr>");
+
+
+
+
+
+
         }
 
         pagina.println("</tbody>");
         pagina.println("</table>");
-        pagina.println("<p>O total de sua compra é: "+carrinho.TotalCompra()+"</p>");
+        pagina.println("<p>O total de sua compra é: "+total+"</p>");
         pagina.println("<a href=\"/LojaOnline\">Ver Produtos</a>");
 
         if(finalizarCompra)
