@@ -119,66 +119,63 @@ public class GerarHTML {
     }
     public void gerarTabelaProdutos(ArrayList<Produto> lista, String [] cabecalhos, String caption, Carrinho carrinho) throws IOException {
         var pagina = this.response.getWriter();
-        ArrayList<Produto> produtos = new ArrayList<Produto>();
 
         HttpSession sessao = request.getSession(false);
 
-        if(sessao != null) {
-            String tipoSessao = (String) sessao.getAttribute("tipo");
+        String tipoSessao = (String) sessao.getAttribute("tipo");
 
-            pagina.println("<table border=1>");
-            pagina.println("<caption>" + caption + "</caption>");
+        pagina.println("<table border=1>");
+        pagina.println("<caption>" + caption + "</caption>");
 
-            pagina.println("<thead>");
-            for (String cabecalho : cabecalhos) {
-                pagina.println("<th>" + cabecalho + "</th>");
-            }
-
-            if (tipoSessao.equals("cliente")) {
-                pagina.println("<th>Carrinho</th>");
-            }
-
-            pagina.println("</thead>");
-
-            pagina.println("<tbody>");
-            for (Produto p : lista) {
-                int estoque = p.getEstoque();
-                pagina.println("<tr>");
-                pagina.println("<td>" + p.getNome() + "</td>");
-                pagina.println("<td>" + p.getDescricao() + "</td>");
-                pagina.println("<td>" + p.getPreco() + "</td>");
-
-                if(carrinho != null) {
-                    for (Produto pCarrinho : carrinho.getProdutos()) {
-                        if (pCarrinho.getId() == p.getId()){
-                            if(estoque - pCarrinho.getEstoque() >= 0)
-                                estoque -= pCarrinho.getEstoque();
-                        }
-                    }
-                }
-
-                pagina.println("<td>" + estoque + "</td>");
-
-                if(tipoSessao.equals("cliente")){
-                    if(estoque > 0){
-                        pagina.println("<td><a href=\"/LojaOnline/CarrinhoServlet?id="+p.getId()+"&comando=add\">Adicionar</a></td>");
-                    }else{
-                        pagina.println("<td>Sem Estoque</td>");
-                    }
-                }
-                pagina.println("</tr>");
-            }
-
-            pagina.println("</tbody>");
-            pagina.println("</table>");
-
-
-            if(tipoSessao.equals("lojista"))
-                pagina.println("<a href='/paginaCadProd'>Cadastrar Produto</a>");
-            else
-                pagina.println("<a href='/Carrinho'>Ver Carrinho</a>");
-
-            pagina.println("<a href='/deslogar'>Sair</a>");
+        pagina.println("<thead>");
+        for (String cabecalho : cabecalhos) {
+            pagina.println("<th>" + cabecalho + "</th>");
         }
-    }
+
+        if (tipoSessao.equals("cliente")) {
+            pagina.println("<th>Carrinho</th>");
+        }
+
+        pagina.println("</thead>");
+
+        pagina.println("<tbody>");
+        for (Produto p : lista) {
+            int estoque = p.getEstoque();
+            pagina.println("<tr>");
+            pagina.println("<td>" + p.getNome() + "</td>");
+            pagina.println("<td>" + p.getDescricao() + "</td>");
+            pagina.println("<td>" + p.getPreco() + "</td>");
+
+            if(carrinho != null) {
+                for (Produto pCarrinho : carrinho.getProdutos()) {
+                    if (pCarrinho.getId() == p.getId()){
+                        if(estoque - pCarrinho.getEstoque() >= 0)
+                            estoque -= pCarrinho.getEstoque();
+                    }
+                }
+            }
+
+            pagina.println("<td>" + estoque + "</td>");
+
+            if(tipoSessao.equals("cliente")){
+                if(estoque > 0){
+                    pagina.println("<td><a href=\"/LojaOnline/CarrinhoServlet?id="+p.getId()+"&comando=add\">Adicionar</a></td>");
+                }else{
+                    pagina.println("<td>Sem Estoque</td>");
+                }
+            }
+            pagina.println("</tr>");
+        }
+
+        pagina.println("</tbody>");
+        pagina.println("</table>");
+
+
+        if(tipoSessao.equals("lojista"))
+            pagina.println("<a href='/paginaCadProd'>Cadastrar Produto</a>");
+        else
+            pagina.println("<a href='/Carrinho'>Ver Carrinho</a>");
+
+        pagina.println("<a href='/deslogar'>Sair</a>");
+        }
 }

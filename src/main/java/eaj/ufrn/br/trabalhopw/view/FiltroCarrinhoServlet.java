@@ -1,7 +1,5 @@
 package eaj.ufrn.br.trabalhopw.view;
 
-import eaj.ufrn.br.trabalhopw.dominio.Cliente;
-import eaj.ufrn.br.trabalhopw.dominio.Lojista;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,8 +8,13 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter({"/LojaOnline", "/deslogar", "/paginaCadProd", "/Carrinho", "/FinalizaCompra"})
-public class FiltroAutenticacao implements Filter {
+@WebFilter({"/LojaOnline/CarrinhoServlet"})
+public class FiltroCarrinhoServlet implements Filter {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
+    }
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
@@ -21,7 +24,7 @@ public class FiltroAutenticacao implements Filter {
         HttpSession sessao = request.getSession(false);
 
         if(sessao == null){
-            response.sendRedirect("./index.html?msg=Usuario_nao_autorizado");
+            response.sendRedirect("../index.html?msg=Usuario_nao_autorizado");
             return;
         }else{
 
@@ -29,17 +32,27 @@ public class FiltroAutenticacao implements Filter {
 
             if(!logado || logado == null){
                 sessao.invalidate();
-                response.sendRedirect("./index.html");
+                response.sendRedirect("../index.html");
                 return;
+            }else{
+                String tipo = (String) sessao.getAttribute("tipo");
+
+                if(!tipo.equals("cliente")) {
+                    response.sendRedirect("/LojaOnline");
+                    return;
+                }
             }
+//            else{
+//                Carrinho carrinho = (Carrinho) sessao.getAttribute("carrinho");
+//
+//                if(carrinho == null){
+//                    System.out.println("Carrinho null");
+//                    response.sendRedirect("./index.html");
+//                }
+//            }
 
         }
         filterChain.doFilter(servletRequest, servletResponse);
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        Filter.super.init(filterConfig);
     }
 
     @Override

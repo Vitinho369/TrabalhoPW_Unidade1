@@ -24,29 +24,27 @@ public class LojaController {
 
         Cliente cliente = Cliente.clienteLogin(email,senha);
         Lojista lojista = Lojista.lojistaLogin(email, senha);
-        HttpSession session = request.getSession(false);
+        HttpSession sessao = request.getSession(false);
 
         if(cliente != null || lojista != null){
 
-            if(session != null){
-                session.invalidate();
-            }
-            session = request.getSession();
-            session.setAttribute("logado", true);
+            if(sessao != null) sessao.invalidate();
 
-           if(cliente != null) {
-               session.setAttribute("tipo", "cliente");
-           }else{
-               session.setAttribute("tipo", "lojista");
-           }
+            sessao = request.getSession();
+            sessao.setAttribute("logado", true);
 
-            session.setAttribute("usuario", email);
+           if(cliente != null)
+               sessao.setAttribute("tipo", "cliente");
+           else
+               sessao.setAttribute("tipo", "lojista");
+
+
+            sessao.setAttribute("usuario", email);
             response.sendRedirect("/LojaOnline");
         }else{
-            if(session != null){
-                session.invalidate();
-                System.out.println("Cliente não cadastrado");
-            }
+
+            if(sessao != null)
+                sessao.invalidate();
 
             response.sendRedirect("./index.html?msg=Usuario_nao_autorizado");
         }
@@ -63,6 +61,7 @@ public class LojaController {
         System.out.println(cliente.getSenha());
         System.out.println(cliente.getEmail());
         System.out.println(cliente.getNome());
+
         if(!cliente.getNome().trim().isEmpty() && !cliente.getSenha().trim().isEmpty()) {
 
             ClienteDAO clienteDAO = new ClienteDAO();
@@ -78,6 +77,7 @@ public class LojaController {
                 gerarHTML.gerarLink("/cadastro.html", "Voltar");
                 gerarHTML.fecharHTML();
             }
+
         }else{
             response.sendRedirect("./cadastro.html");
         }
@@ -86,10 +86,7 @@ public class LojaController {
     @RequestMapping(value = "/deslogar", method = RequestMethod.GET)
     public void deslogar(HttpServletRequest request, HttpServletResponse response) throws IOException{
         HttpSession sessao = request.getSession(false);
-
-        if(sessao != null) {
-            sessao.invalidate();
-        }
+        sessao.invalidate();
         response.sendRedirect("index.html");
     }
 }
