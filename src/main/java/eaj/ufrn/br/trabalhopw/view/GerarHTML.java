@@ -69,7 +69,7 @@ public class GerarHTML {
 
     public void gerarTabelaCarrinho(Carrinho carrinho, String [] cabecalhos, String caption , float total) throws IOException {
         var pagina = this.response.getWriter();
-        var contador = 0;
+
         if(carrinho == null || carrinho.getProdutos() == null || carrinho.getProdutos().isEmpty()){
             response.sendRedirect("/LojaOnline");
             return;

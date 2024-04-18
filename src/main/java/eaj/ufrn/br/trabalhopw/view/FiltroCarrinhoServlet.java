@@ -42,14 +42,6 @@ public class FiltroCarrinhoServlet implements Filter {
                     return;
                 }
             }
-//            else{
-//                Carrinho carrinho = (Carrinho) sessao.getAttribute("carrinho");
-//
-//                if(carrinho == null){
-//                    System.out.println("Carrinho null");
-//                    response.sendRedirect("./index.html");
-//                }
-//            }
 
         }
         filterChain.doFilter(servletRequest, servletResponse);
