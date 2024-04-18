@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter({"/LojaOnline","/Carrinho","/FinalizaCompra"})
+@WebFilter({"/Carrinho","/FinalizaCompra"})
 public class FiltroCliente implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -30,15 +30,7 @@ public class FiltroCliente implements Filter {
         }else{
             String emailUsuario = (String) sessao.getAttribute("usuario");
             if(emailUsuario.isEmpty()){
-                response.sendRedirect("index.html");
-                return;
-            }
-
-            String parametro = sessao.getAttribute("usuario").toString();
-            String usuario[] = parametro.split("@");
-
-            if(2 > usuario.length){
-                response.sendRedirect("index.html");
+                response.sendRedirect("./index.html");
                 return;
             }
         }
