@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
-import java.net.http.HttpResponse;
 
 @Controller
-public class LojaController {
+public class AutenticacaoController {
 
     @RequestMapping(value = "/logar", method = RequestMethod.POST)
     public void doLogin(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
